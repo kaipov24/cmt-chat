@@ -5,6 +5,10 @@
   "packageManager": "pnpm@9.15.4",
   "scripts": {
     "build": "pnpm --recursive run build",
+    "db:deploy": "pnpm --filter @cmt/backend run db:deploy",
+    "db:migrate": "pnpm --filter @cmt/backend run db:migrate",
+    "db:seed": "pnpm --filter @cmt/backend run db:seed",
+    "db:studio": "pnpm --filter @cmt/backend run db:studio",
     "dev": "pnpm --parallel --filter @cmt/frontend --filter @cmt/backend run dev",
     "format": "prettier --check .",
     "format:write": "prettier --write .",
@@ -13,6 +17,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.18.0",
+    "@next/eslint-plugin-next": "^15.1.4",
     "eslint": "^9.18.0",
     "eslint-config-next": "^15.1.4",
     "prettier": "^3.4.2",

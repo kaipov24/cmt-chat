@@ -2,6 +2,8 @@ export type UserRole = 'user' | 'moderator' | 'admin';
 export type UserStatus = 'active' | 'suspended' | 'deleted';
 export type CommunityType = 'country' | 'city' | 'topic';
 export type LocationVisibility = 'hidden' | 'country' | 'city';
+export type CommunityMemberRole = 'member' | 'moderator' | 'admin';
+export type ReportStatus = 'pending' | 'reviewed' | 'dismissed' | 'action_taken';
 
 export interface GlobeMarker {
   country: string;

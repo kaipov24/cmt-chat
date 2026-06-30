@@ -2,7 +2,7 @@
 
 A location-based community platform for people with Charcot-Marie-Tooth disease.
 
-This repository is currently at **Phase 1**: monorepo structure and configuration.
+This repository is currently at **Phase 2**: PostgreSQL and Prisma database foundation.
 
 ## Scope
 
@@ -30,7 +30,7 @@ infrastructure/
   monitoring/
 ```
 
-## Phase 1 Commands
+## Common Commands
 
 ```bash
 pnpm install
@@ -38,6 +38,21 @@ pnpm lint
 pnpm typecheck
 pnpm build
 ```
+
+## Phase 2 Database
+
+The backend uses Prisma with PostgreSQL. Configure `DATABASE_URL` in
+`apps/backend/.env` using `apps/backend/.env.example` as the template.
+
+```bash
+pnpm install
+pnpm db:migrate
+pnpm db:seed
+```
+
+The initial schema includes users, profiles, communities, community members,
+messages, and reports. Seed data uses approximate city-center coordinates only;
+it does not represent exact addresses or precise GPS locations.
 
 ## Medical Disclaimer
 
