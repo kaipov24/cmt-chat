@@ -4,7 +4,10 @@ import { ConfigModule } from '@nestjs/config';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
+import { CommunitiesModule } from './communities/communities.module';
+import { LocationsModule } from './locations/locations.module';
 import { PrismaModule } from './prisma/prisma.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -18,7 +21,10 @@ import { PrismaModule } from './prisma/prisma.module';
       },
     ]),
     AuthModule,
+    CommunitiesModule,
+    LocationsModule,
     PrismaModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [

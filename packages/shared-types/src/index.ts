@@ -24,6 +24,12 @@ export interface CommunitySummary {
   memberCount: number;
 }
 
+export interface LocationOption {
+  country: string | null;
+  city?: string | null;
+  userCount: number;
+}
+
 export interface PublicProfile {
   id: string;
   username: string;
@@ -33,4 +39,17 @@ export interface PublicProfile {
   country: string | null;
   city: string | null;
   showOnlineStatus: boolean;
+}
+
+export interface AuthUser {
+  id: string;
+  email: string;
+  role: UserRole;
+  status: UserStatus;
+  profile: Pick<PublicProfile, 'displayName' | 'username'> | null;
+}
+
+export interface AuthSession {
+  accessToken: string;
+  user: AuthUser;
 }

@@ -5,12 +5,14 @@ coverage/
 .turbo/
 .corepack*/
 .cache/
+.config/
 .home/
 .pnpm-store/
 
 .env
 .env.*
 !.env.example
+!**/.env.example
 
 *.log
 *.tsbuildinfo
