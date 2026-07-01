@@ -57,6 +57,7 @@ model User {
   profile      Profile?
   memberships  CommunityMember[]
   messages     Message[]
+  refreshTokens RefreshToken[]
   reportsMade  Report[]          @relation("ReportsMade")
   reportsAbout Report[]          @relation("ReportsAbout")
 
@@ -147,4 +148,18 @@ model Report {
   @@index([reporterId])
   @@index([reportedUserId])
   @@index([messageId])
+}
+
+model RefreshToken {
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String    @db.Uuid
+  tokenHash String
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@index([revokedAt])
 }
