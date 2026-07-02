@@ -1,7 +1,8 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import type { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import type { AuthenticatedUser } from '../auth/types/authenticated-user';
+import type { CreateMessageDto } from './dto/create-message.dto';
 import type { ListCommunitiesDto } from './dto/list-communities.dto';
 
 const communitySelect = {
@@ -22,6 +23,31 @@ const communitySelect = {
 
 type SelectedCommunity = Prisma.CommunityGetPayload<{
   select: typeof communitySelect;
+}>;
+
+const messageSelect = {
+  content: true,
+  createdAt: true,
+  id: true,
+  sender: {
+    select: {
+      id: true,
+      profile: {
+        select: {
+          avatarUrl: true,
+          city: true,
+          country: true,
+          displayName: true,
+          locationVisibility: true,
+          username: true,
+        },
+      },
+    },
+  },
+} as const satisfies Prisma.MessageSelect;
+
+type SelectedMessage = Prisma.MessageGetPayload<{
+  select: typeof messageSelect;
 }>;
 
 @Injectable()
@@ -141,6 +167,51 @@ export class CommunitiesService {
     }));
   }
 
+  async listMessages(identifier: string) {
+    const community = await this.findCommunity(identifier);
+    const messages = await this.prisma.message.findMany({
+      orderBy: { createdAt: 'asc' },
+      select: messageSelect,
+      take: 50,
+      where: {
+        communityId: community.id,
+        deletedAt: null,
+        sender: {
+          status: 'active',
+        },
+      },
+    });
+
+    return messages.map((message) => this.toMessageResponse(message));
+  }
+
+  async createMessage(identifier: string, dto: CreateMessageDto, user: AuthenticatedUser) {
+    const community = await this.findCommunity(identifier);
+    const membership = await this.prisma.communityMember.findUnique({
+      where: {
+        communityId_userId: {
+          communityId: community.id,
+          userId: user.id,
+        },
+      },
+    });
+
+    if (!membership) {
+      throw new ForbiddenException('Join the community before posting messages');
+    }
+
+    const message = await this.prisma.message.create({
+      data: {
+        communityId: community.id,
+        content: dto.content.trim(),
+        senderId: user.id,
+      },
+      select: messageSelect,
+    });
+
+    return this.toMessageResponse(message);
+  }
+
   private async findCommunity(identifier: string) {
     const isUuid =
       /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(identifier);
@@ -164,6 +235,29 @@ export class CommunitiesService {
     return {
       ...rest,
       memberCount: _count.members,
+    };
+  }
+
+  private toMessageResponse(message: SelectedMessage) {
+    const profile = message.sender.profile;
+
+    return {
+      content: message.content,
+      createdAt: message.createdAt,
+      id: message.id,
+      sender: profile
+        ? {
+            avatarUrl: profile.avatarUrl,
+            city: profile.locationVisibility === 'city' ? profile.city : null,
+            country:
+              profile.locationVisibility === 'city' || profile.locationVisibility === 'country'
+                ? profile.country
+                : null,
+            displayName: profile.displayName,
+            id: message.sender.id,
+            username: profile.username,
+          }
+        : null,
     };
   }
 }

@@ -1,8 +1,9 @@
-import { Controller, Delete, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import type { AuthenticatedUser } from '../auth/types/authenticated-user';
 import { CommunitiesService } from './communities.service';
+import { CreateMessageDto } from './dto/create-message.dto';
 import { ListCommunitiesDto } from './dto/list-communities.dto';
 
 @Controller('communities')
@@ -34,5 +35,20 @@ export class CommunitiesController {
   @Get(':id/members')
   listMembers(@Param('id') id: string) {
     return this.communities.listMembers(id);
+  }
+
+  @Get(':id/messages')
+  listMessages(@Param('id') id: string) {
+    return this.communities.listMessages(id);
+  }
+
+  @Post(':id/messages')
+  @UseGuards(JwtAuthGuard)
+  createMessage(
+    @Param('id') id: string,
+    @Body() dto: CreateMessageDto,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
+    return this.communities.createMessage(id, dto, user);
   }
 }

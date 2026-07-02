@@ -29,6 +29,34 @@ export interface PublicProfileDto {
   };
 }
 
+export interface CommunityMessageDto {
+  content: string;
+  createdAt: string;
+  id: string;
+  sender: {
+    avatarUrl: string | null;
+    city: string | null;
+    country: string | null;
+    displayName: string;
+    id: string;
+    username: string;
+  } | null;
+}
+
+export interface AuthSessionDto {
+  accessToken: string;
+  user: {
+    email: string;
+    id: string;
+    profile: {
+      displayName: string;
+      username: string;
+    } | null;
+    role: string;
+    status: string;
+  };
+}
+
 const fallbackMarkers: GlobeMarker[] = [
   {
     city: 'Bishkek',
@@ -132,7 +160,17 @@ const fallbackPeople: PublicProfileDto[] = [
   },
 ];
 
-const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
+const fallbackMessages: CommunityMessageDto[] = [
+  {
+    content: 'Welcome. Share a question, local tip, or just say hello.',
+    createdAt: new Date(0).toISOString(),
+    id: 'fallback-message-welcome',
+    sender: null,
+  },
+];
+
+const configuredApiBaseUrl = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
+const apiBaseUrl = configuredApiBaseUrl.replace('http://127.0.0.1:', 'http://localhost:');
 
 async function fetchJson<T>(path: string, fallback: T): Promise<T> {
   try {
@@ -158,6 +196,24 @@ export async function getActiveCommunities() {
   return fetchJson<CommunitySummaryDto[]>('/api/communities', fallbackCommunities);
 }
 
+export async function getCommunity(identifier: string) {
+  const fallback =
+    fallbackCommunities.find(
+      (community) => community.id === identifier || community.slug === identifier,
+    ) ?? fallbackCommunities[0]!;
+
+  return fetchJson<CommunitySummaryDto>(`/api/communities/${identifier}`, fallback);
+}
+
+export async function getCommunityMessages(identifier: string) {
+  return fetchJson<CommunityMessageDto[]>(
+    `/api/communities/${identifier}/messages`,
+    fallbackMessages,
+  );
+}
+
 export async function getPublicPeople() {
   return fetchJson<PublicProfileDto[]>('/api/users', fallbackPeople);
 }
+
+export { apiBaseUrl };

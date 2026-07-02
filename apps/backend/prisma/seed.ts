@@ -186,6 +186,26 @@ async function ensureMembership(communityId: string, userId: string) {
   });
 }
 
+async function ensureSeedMessage(communityId: string, userId: string, content: string) {
+  const existingMessage = await prisma.message.findFirst({
+    where: {
+      communityId,
+      content,
+      senderId: userId,
+    },
+  });
+
+  if (!existingMessage) {
+    await prisma.message.create({
+      data: {
+        communityId,
+        content,
+        senderId: userId,
+      },
+    });
+  }
+}
+
 async function main() {
   for (const location of seedLocations) {
     const countryCommunity = await upsertCountryCommunity(location);
@@ -195,6 +215,11 @@ async function main() {
       const user = await upsertUserWithProfile(location, userSeed);
       await ensureMembership(countryCommunity.id, user.id);
       await ensureMembership(cityCommunity.id, user.id);
+      await ensureSeedMessage(
+        cityCommunity.id,
+        user.id,
+        `Hi from ${location.city}. Open to connecting with others nearby.`,
+      );
     }
   }
 

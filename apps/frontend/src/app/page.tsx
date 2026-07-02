@@ -1,3 +1,4 @@
+import { AuthNav } from '@/components/auth-nav';
 import { CommunityGlobe } from '@/components/community-globe';
 import { getActiveCommunities, getGlobeMarkers, getPublicPeople } from '@/lib/api';
 import Link from 'next/link';
@@ -20,17 +21,7 @@ export default async function HomePage() {
             </span>
             <span>Community Platform</span>
           </Link>
-          <div className="flex flex-wrap items-center gap-1 text-sm font-medium text-slate-700 sm:gap-2">
-            <Link href="/members">Members</Link>
-            <Link href="/communities">Groups</Link>
-            <Link href="/about">About</Link>
-            <Link
-              className="rounded-md bg-slate-950 px-3 py-2 text-white transition hover:bg-slate-800"
-              href="/register"
-            >
-              Register
-            </Link>
-          </div>
+          <AuthNav />
         </div>
       </nav>
 
