@@ -1,8 +1,8 @@
 import { AuthNav } from '@/components/auth-nav';
-import { SettingsForm } from '@/components/settings-form';
+import { ModerationReports } from '@/components/moderation-reports';
 import Link from 'next/link';
 
-export default function SettingsPage() {
+export default function ModerationPage() {
   return (
     <main className="min-h-screen bg-[#f4f7fa] text-slate-950">
       <nav className="border-b border-slate-200 bg-white/95" aria-label="Main navigation">
@@ -17,16 +17,16 @@ export default function SettingsPage() {
         </div>
       </nav>
 
-      <div className="mx-auto grid max-w-[900px] gap-5 px-4 py-6 sm:px-6">
+      <div className="mx-auto grid max-w-[1000px] gap-5 px-4 py-6 sm:px-6">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Settings</p>
-          <h1 className="mt-1 text-3xl font-semibold text-slate-950">Profile and privacy</h1>
+          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Moderation</p>
+          <h1 className="mt-1 text-3xl font-semibold text-slate-950">Reports</h1>
           <p className="mt-2 max-w-2xl text-sm text-slate-600">
-            Control how your profile appears to other people and what location detail is visible.
+            Review reports submitted by members.
           </p>
         </div>
 
-        <SettingsForm />
+        <ModerationReports />
       </div>
     </main>
   );

@@ -3,6 +3,7 @@
 import type { CommunityMessageDto } from '@/lib/api';
 import { useState } from 'react';
 import { CommunityMessageComposer } from './community-message-composer';
+import { ReportButton } from './report-button';
 
 interface CommunityChatProps {
   communityId: string;
@@ -59,6 +60,14 @@ export function CommunityChat({ communityId, initialMessages }: CommunityChatPro
                   <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-slate-700">
                     {message.content}
                   </p>
+                  {message.sender ? (
+                    <div className="mt-2">
+                      <ReportButton
+                        messageId={message.id}
+                        reportedUserId={message.sender.id}
+                      />
+                    </div>
+                  ) : null}
                 </div>
               </article>
             ))

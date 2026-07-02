@@ -17,3 +17,5 @@ coverage/
 *.log
 *.tsbuildinfo
 .DS_Store
+
+apps/backend/uploads/

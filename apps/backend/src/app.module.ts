@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { CommunitiesModule } from './communities/communities.module';
 import { LocationsModule } from './locations/locations.module';
 import { PrismaModule } from './prisma/prisma.module';
+import { ReportsModule } from './reports/reports.module';
 import { UsersModule } from './users/users.module';
 
 @Module({
@@ -24,6 +25,7 @@ import { UsersModule } from './users/users.module';
     CommunitiesModule,
     LocationsModule,
     PrismaModule,
+    ReportsModule,
     UsersModule,
   ],
   controllers: [AppController],

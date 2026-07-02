@@ -29,6 +29,14 @@ type SelectedProfile = Prisma.ProfileGetPayload<{
   select: typeof profileSelect;
 }>;
 
+function trimmedOrNull(value: string | null | undefined) {
+  if (value === undefined) {
+    return undefined;
+  }
+
+  return value?.trim() || null;
+}
+
 @Injectable()
 export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
@@ -73,6 +81,19 @@ export class UsersService {
     return this.toPublicProfile(profile);
   }
 
+  async getProfileByUsername(username: string) {
+    const profile = await this.prisma.profile.findUnique({
+      select: profileSelect,
+      where: { username },
+    });
+
+    if (!profile || profile.user.status !== 'active') {
+      throw new NotFoundException('Profile not found');
+    }
+
+    return this.toPublicProfile(profile);
+  }
+
   async getMyProfile(user: AuthenticatedUser) {
     const profile = await this.prisma.profile.findUnique({
       select: profileSelect,
@@ -90,15 +111,25 @@ export class UsersService {
     const data: Prisma.ProfileUpdateInput = {};
 
     if (dto.displayName !== undefined) data.displayName = dto.displayName.trim();
-    if (dto.bio !== undefined) data.bio = dto.bio.trim() || null;
-    if (dto.avatarUrl !== undefined) data.avatarUrl = dto.avatarUrl.trim() || null;
-    if (dto.country !== undefined) data.country = dto.country.trim() || null;
-    if (dto.city !== undefined) data.city = dto.city.trim() || null;
+    if (dto.bio !== undefined) data.bio = trimmedOrNull(dto.bio);
+    if (dto.avatarUrl !== undefined) data.avatarUrl = trimmedOrNull(dto.avatarUrl);
+    if (dto.country !== undefined) data.country = trimmedOrNull(dto.country);
+    if (dto.city !== undefined) data.city = trimmedOrNull(dto.city);
     if (dto.locationVisibility !== undefined) data.locationVisibility = dto.locationVisibility;
     if (dto.showOnlineStatus !== undefined) data.showOnlineStatus = dto.showOnlineStatus;
 
     return this.prisma.profile.update({
       data,
+      select: profileSelect,
+      where: { userId: user.id },
+    });
+  }
+
+  async updateMyAvatar(user: AuthenticatedUser, avatarUrl: string) {
+    return this.prisma.profile.update({
+      data: {
+        avatarUrl,
+      },
       select: profileSelect,
       where: { userId: user.id },
     });

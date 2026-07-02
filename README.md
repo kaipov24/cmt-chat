@@ -2,7 +2,7 @@
 
 A location-based community platform for people with Charcot-Marie-Tooth disease.
 
-This repository is currently at **Phase 6**: community pages with public chat.
+This repository is currently at **Phase 10**: moderation actions.
 
 ## Scope
 
@@ -116,6 +116,48 @@ POST /api/communities/:id/messages
 
 Community pages show group details, recent public messages, and a composer.
 Posting requires authentication and community membership.
+
+## Phase 7 Profile Settings And Avatar Upload
+
+The settings page lets authenticated users update profile details and upload an
+avatar image. Uploaded avatars are stored locally under `apps/backend/uploads`
+and served from:
+
+```text
+POST /api/users/me/avatar
+GET  /uploads/avatars/:filename
+```
+
+## Phase 8 Member Discovery And Public Profiles
+
+The frontend now uses the profile APIs for searchable member discovery and
+username-based public profile pages:
+
+```text
+GET /members
+GET /profile/:username
+GET /api/users/by-username/:username/profile
+```
+
+## Phase 9 Reporting And Moderation Review
+
+Authenticated users can report public profiles or chat messages. Moderators and
+admins can list submitted reports for review.
+
+```text
+POST /api/reports
+GET  /api/reports
+GET  /moderation
+```
+
+## Phase 10 Moderation Actions
+
+Moderators and admins can update report status. Admins can also suspend the
+reported user while resolving a report.
+
+```text
+PATCH /api/reports/:id
+```
 
 ## Medical Disclaimer
 

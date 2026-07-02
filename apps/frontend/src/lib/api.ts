@@ -43,6 +43,32 @@ export interface CommunityMessageDto {
   } | null;
 }
 
+export interface ReportSummaryDto {
+  createdAt: string;
+  id: string;
+  reason: string;
+  reviewedAt: string | null;
+  status: 'pending' | 'reviewed' | 'dismissed' | 'action_taken';
+  message: {
+    content: string;
+    id: string;
+  } | null;
+  reportedUser: {
+    id: string;
+    profile: {
+      displayName: string;
+      username: string;
+    } | null;
+  };
+  reporter: {
+    id: string;
+    profile: {
+      displayName: string;
+      username: string;
+    } | null;
+  };
+}
+
 export interface AuthSessionDto {
   accessToken: string;
   user: {
@@ -52,6 +78,24 @@ export interface AuthSessionDto {
       displayName: string;
       username: string;
     } | null;
+    role: string;
+    status: string;
+  };
+}
+
+export interface MyProfileDto {
+  avatarUrl: string | null;
+  bio: string | null;
+  city: string | null;
+  country: string | null;
+  displayName: string;
+  id: string;
+  locationVisibility: 'city' | 'country' | 'hidden';
+  showOnlineStatus: boolean;
+  username: string;
+  user: {
+    id: string;
+    lastSeenAt: string | null;
     role: string;
     status: string;
   };
@@ -214,6 +258,31 @@ export async function getCommunityMessages(identifier: string) {
 
 export async function getPublicPeople() {
   return fetchJson<PublicProfileDto[]>('/api/users', fallbackPeople);
+}
+
+export async function searchPublicPeople(filters: { city?: string; country?: string; search?: string }) {
+  const searchParams = new URLSearchParams();
+
+  if (filters.search?.trim()) searchParams.set('search', filters.search.trim());
+  if (filters.country?.trim()) searchParams.set('country', filters.country.trim());
+  if (filters.city?.trim()) searchParams.set('city', filters.city.trim());
+
+  const query = searchParams.toString();
+
+  return fetchJson<PublicProfileDto[]>(`/api/users${query ? `?${query}` : ''}`, fallbackPeople);
+}
+
+export async function getPublicProfileByUsername(username: string) {
+  const fallback = fallbackPeople.find((person) => person.username === username) ?? null;
+
+  return fetchJson<PublicProfileDto | null>(
+    `/api/users/by-username/${encodeURIComponent(username)}/profile`,
+    fallback,
+  );
+}
+
+export async function getModerationReports() {
+  return fetchJson<ReportSummaryDto[]>('/api/reports', []);
 }
 
 export { apiBaseUrl };

@@ -19,22 +19,22 @@ export class UpdateProfileDto {
   @IsOptional()
   @IsString()
   @MaxLength(500)
-  bio?: string;
+  bio?: string | null;
 
   @IsOptional()
   @IsUrl({ require_protocol: true })
   @MaxLength(500)
-  avatarUrl?: string;
+  avatarUrl?: string | null;
 
   @IsOptional()
   @IsString()
   @MaxLength(80)
-  country?: string;
+  country?: string | null;
 
   @IsOptional()
   @IsString()
   @MaxLength(80)
-  city?: string;
+  city?: string | null;
 
   @IsOptional()
   @IsEnum(LocationVisibility)
