@@ -5,6 +5,7 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
 import { CommunitiesModule } from './communities/communities.module';
+import { DirectMessagesModule } from './direct-messages/direct-messages.module';
 import { LocationsModule } from './locations/locations.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { ReportsModule } from './reports/reports.module';
@@ -23,6 +24,7 @@ import { UsersModule } from './users/users.module';
     ]),
     AuthModule,
     CommunitiesModule,
+    DirectMessagesModule,
     LocationsModule,
     PrismaModule,
     ReportsModule,

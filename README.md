@@ -2,7 +2,7 @@
 
 A location-based community platform for people with Charcot-Marie-Tooth disease.
 
-This repository is currently at **Phase 10**: moderation actions.
+This repository is currently at **Phase 13**: direct user messaging.
 
 ## Scope
 
@@ -157,6 +157,41 @@ reported user while resolving a report.
 
 ```text
 PATCH /api/reports/:id
+```
+
+## Phase 11 User-Created Communities
+
+Authenticated users can create city, country, or topic communities. The creator
+is automatically added as the community admin.
+
+```text
+POST /api/communities
+GET  /communities
+```
+
+## Phase 12 Community Membership Chat Flow
+
+Community pages now show real membership state. Signed-in users can join or
+leave a community from the page, and posting guidance points users to the
+membership action instead of a generic login route.
+
+```text
+GET    /api/communities/:id/membership
+POST   /api/communities/:id/join
+DELETE /api/communities/:id/leave
+```
+
+## Phase 13 Direct User Messaging
+
+Authenticated users can start direct conversations from member profiles, list
+their conversations, and send one-to-one messages.
+
+```text
+POST /api/direct-messages/conversations
+GET  /api/direct-messages/conversations
+GET  /api/direct-messages/conversations/:id/messages
+POST /api/direct-messages/conversations/:id/messages
+GET  /messages
 ```
 
 ## Medical Disclaimer

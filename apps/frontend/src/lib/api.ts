@@ -69,6 +69,38 @@ export interface ReportSummaryDto {
   };
 }
 
+export interface DirectParticipantDto {
+  id: string;
+  profile: {
+    avatarUrl: string | null;
+    city: string | null;
+    country: string | null;
+    displayName: string;
+    username: string;
+  } | null;
+}
+
+export interface DirectConversationDto {
+  createdAt: string;
+  id: string;
+  latestMessage: {
+    content: string;
+    createdAt: string;
+    id: string;
+    senderId: string;
+  } | null;
+  otherParticipant: DirectParticipantDto;
+  updatedAt: string;
+}
+
+export interface DirectMessageDto {
+  content: string;
+  createdAt: string;
+  id: string;
+  readAt: string | null;
+  sender: DirectParticipantDto;
+}
+
 export interface AuthSessionDto {
   accessToken: string;
   user: {

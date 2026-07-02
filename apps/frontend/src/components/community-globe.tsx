@@ -520,7 +520,7 @@ export function CommunityGlobe({ communities, markers, people }: CommunityGlobeP
                   </Link>
                   <Link
                     className="inline-flex justify-center rounded-md bg-emerald-600 px-3 py-2 text-sm font-semibold text-white transition hover:bg-emerald-700"
-                    href={`/login?next=/profile/${person.username}`}
+                    href={`/messages?userId=${person.user.id}`}
                   >
                     Message
                   </Link>

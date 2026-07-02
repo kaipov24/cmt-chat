@@ -106,9 +106,9 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
           <div className="mt-5 flex flex-wrap gap-2">
             <Link
               className="rounded-md bg-slate-950 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800"
-              href={`/login?next=/profile/${profile.username}`}
+              href={`/messages?userId=${profile.user.id}`}
             >
-              Sign in to chat
+              Message
             </Link>
             <Link
               className="rounded-md border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-950"

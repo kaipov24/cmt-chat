@@ -1,4 +1,5 @@
 import { AuthNav } from '@/components/auth-nav';
+import { CommunityActions } from '@/components/community-actions';
 import { CommunityChat } from '@/components/community-chat';
 import { getCommunity, getCommunityMessages } from '@/lib/api';
 import Link from 'next/link';
@@ -62,13 +63,8 @@ export default async function CommunityPage({ params }: CommunityPageProps) {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-2">
-            <Link
-              className="inline-flex justify-center rounded-md bg-emerald-600 px-3 py-2 text-sm font-semibold text-white transition hover:bg-emerald-700"
-              href="/login"
-            >
-              Join
-            </Link>
+          <div className="grid gap-2">
+            <CommunityActions communityId={community.slug} />
             <Link
               className="inline-flex justify-center rounded-md border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-800 transition hover:bg-slate-100"
               href="/members"

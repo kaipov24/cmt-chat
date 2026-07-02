@@ -38,12 +38,12 @@ export function CommunityMessageComposer({
       });
 
       if (response.status === 401) {
-        setError('Sign in to post a message.');
+        setError('Sign in and join this community before posting.');
         return;
       }
 
       if (response.status === 403) {
-        setError('Join this community before posting.');
+        setError('Use the Join to chat button before posting.');
         return;
       }
 

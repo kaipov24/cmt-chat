@@ -2,6 +2,7 @@ import { ConflictException, ForbiddenException, Injectable, NotFoundException } 
 import type { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import type { AuthenticatedUser } from '../auth/types/authenticated-user';
+import type { CreateCommunityDto } from './dto/create-community.dto';
 import type { CreateMessageDto } from './dto/create-message.dto';
 import type { ListCommunitiesDto } from './dto/list-communities.dto';
 
@@ -50,6 +51,19 @@ type SelectedMessage = Prisma.MessageGetPayload<{
   select: typeof messageSelect;
 }>;
 
+function slugify(value: string) {
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+    .slice(0, 80);
+}
+
+function trimmedOrNull(value: string | undefined) {
+  return value?.trim() || null;
+}
+
 @Injectable()
 export class CommunitiesService {
   constructor(private readonly prisma: PrismaService) {}
@@ -70,6 +84,48 @@ export class CommunitiesService {
 
   async getCommunity(identifier: string) {
     const community = await this.findCommunity(identifier);
+
+    return this.toCommunityResponse(community);
+  }
+
+  async createCommunity(dto: CreateCommunityDto, user: AuthenticatedUser) {
+    const country = dto.type === 'topic' ? null : trimmedOrNull(dto.country);
+    const city = dto.type === 'city' ? trimmedOrNull(dto.city) : null;
+    const baseSlug =
+      dto.type === 'city' && country && city
+        ? slugify(`${country}-${city}-${dto.name}`)
+        : slugify(dto.name);
+
+    if (!baseSlug) {
+      throw new ConflictException('Community name cannot create a valid URL');
+    }
+
+    const existingCommunity = await this.prisma.community.findUnique({
+      select: { id: true },
+      where: { slug: baseSlug },
+    });
+
+    if (existingCommunity) {
+      throw new ConflictException('A community with this name already exists');
+    }
+
+    const community = await this.prisma.community.create({
+      data: {
+        city,
+        country,
+        description: trimmedOrNull(dto.description),
+        members: {
+          create: {
+            role: 'admin',
+            userId: user.id,
+          },
+        },
+        name: dto.name.trim(),
+        slug: baseSlug,
+        type: dto.type,
+      },
+      select: communitySelect,
+    });
 
     return this.toCommunityResponse(community);
   }
@@ -110,6 +166,23 @@ export class CommunitiesService {
     });
 
     return { left: true };
+  }
+
+  async getMyMembership(identifier: string, user: AuthenticatedUser) {
+    const community = await this.findCommunity(identifier);
+
+    return this.prisma.communityMember.findUnique({
+      select: {
+        joinedAt: true,
+        role: true,
+      },
+      where: {
+        communityId_userId: {
+          communityId: community.id,
+          userId: user.id,
+        },
+      },
+    });
   }
 
   async listMembers(identifier: string) {

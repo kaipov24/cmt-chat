@@ -1,4 +1,5 @@
 import { AuthNav } from '@/components/auth-nav';
+import { CreateCommunityForm } from '@/components/create-community-form';
 import { getActiveCommunities } from '@/lib/api';
 import Link from 'next/link';
 
@@ -32,12 +33,16 @@ export default async function CommunitiesPage() {
               Browse city, country, and topic spaces. Open a group to read recent messages.
             </p>
           </div>
-          <Link
+          <a
             className="inline-flex justify-center rounded-md bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-700"
-            href="/register"
+            href="#create-group"
           >
             Create group
-          </Link>
+          </a>
+        </div>
+
+        <div id="create-group">
+          <CreateCommunityForm />
         </div>
 
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">

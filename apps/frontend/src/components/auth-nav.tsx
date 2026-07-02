@@ -81,6 +81,7 @@ export function AuthNav() {
     <div className="flex flex-wrap items-center gap-2 text-sm font-medium text-slate-700">
       <Link href="/members">Members</Link>
       <Link href="/communities">Groups</Link>
+      <Link href="/messages">Messages</Link>
       {user.role === 'admin' || user.role === 'moderator' ? <Link href="/moderation">Moderation</Link> : null}
       <Link href="/settings">Settings</Link>
       <span className="rounded-md bg-slate-100 px-3 py-2 font-semibold text-slate-950">
