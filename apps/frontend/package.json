@@ -11,7 +11,9 @@
   },
   "dependencies": {
     "@cmt/shared-types": "workspace:*",
+    "@types/mapbox-gl": "1.13.10",
     "@types/three": "^0.172.0",
+    "mapbox-gl": "^1.13.3",
     "next": "^15.1.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
@@ -20,6 +22,7 @@
     "three": "^0.172.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.61.1",
     "@types/node": "^22.10.7",
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3",

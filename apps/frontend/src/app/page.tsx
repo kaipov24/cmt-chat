@@ -1,70 +1,46 @@
-import type { GlobeMarker } from '@cmt/shared-types';
+import { CommunityGlobe } from '@/components/community-globe';
+import { getActiveCommunities, getGlobeMarkers, getPublicPeople } from '@/lib/api';
+import Link from 'next/link';
 
-const previewMarkers: GlobeMarker[] = [
-  {
-    country: 'Kyrgyzstan',
-    city: 'Bishkek',
-    latitude: 42.87,
-    longitude: 74.59,
-    userCount: 14,
-    onlineCount: 3,
-  },
-  {
-    country: 'United Kingdom',
-    city: 'London',
-    latitude: 51.51,
-    longitude: -0.13,
-    userCount: 42,
-    onlineCount: 8,
-  },
-  {
-    country: 'United States',
-    city: 'New York',
-    latitude: 40.71,
-    longitude: -74.01,
-    userCount: 57,
-    onlineCount: 12,
-  },
-];
-
-export default function HomePage() {
-  const totalUsers = previewMarkers.reduce((sum, marker) => sum + marker.userCount, 0);
-  const onlineUsers = previewMarkers.reduce((sum, marker) => sum + marker.onlineCount, 0);
+export default async function HomePage() {
+  const [markers, people, communities] = await Promise.all([
+    getGlobeMarkers(),
+    getPublicPeople(),
+    getActiveCommunities(),
+  ]);
+  const currentYear = new Date().getFullYear();
 
   return (
-    <main className="min-h-screen px-6 py-8">
-      <section className="mx-auto flex max-w-6xl flex-col gap-8">
-        <nav className="flex items-center justify-between" aria-label="Main navigation">
-          <span className="text-lg font-semibold text-brand-ink">CMT Community</span>
-          <div className="flex gap-4 text-sm font-medium">
-            <a href="/communities">Communities</a>
-            <a href="/members">Members</a>
-            <a href="/login">Login</a>
+    <main className="min-h-screen bg-[#f4f7fa] text-slate-950">
+      <nav className="border-b border-slate-200 bg-white/95" aria-label="Main navigation">
+        <div className="mx-auto flex max-w-[1440px] flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6">
+          <Link className="flex items-center gap-3 text-sm font-semibold text-slate-950" href="/">
+            <span className="grid h-8 w-8 place-items-center rounded-md bg-slate-950 text-xs text-white">
+              CMT
+            </span>
+            <span>Community Platform</span>
+          </Link>
+          <div className="flex flex-wrap items-center gap-1 text-sm font-medium text-slate-700 sm:gap-2">
+            <Link href="/members">Members</Link>
+            <Link href="/communities">Groups</Link>
+            <Link href="/about">About</Link>
+            <Link
+              className="rounded-md bg-slate-950 px-3 py-2 text-white transition hover:bg-slate-800"
+              href="/register"
+            >
+              Register
+            </Link>
           </div>
-        </nav>
-
-        <div className="grid gap-6 rounded-lg border border-slate-200 bg-white p-6 shadow-sm md:grid-cols-[1.2fr_0.8fr]">
-          <div>
-            <p className="text-sm font-medium uppercase tracking-wide text-brand-green">Phase 1 scaffold</p>
-            <h1 className="mt-3 text-4xl font-semibold text-brand-ink">Find CMT communities by city</h1>
-            <p className="mt-4 max-w-2xl text-slate-600">
-              The interactive globe, authentication, community pages, and real-time chat will be
-              added in later phases. This screen keeps the first milestone focused on structure and
-              shared contracts.
-            </p>
-          </div>
-          <dl className="grid grid-cols-2 gap-4">
-            <div className="rounded-md bg-slate-50 p-4">
-              <dt className="text-sm text-slate-500">Registered users</dt>
-              <dd className="mt-2 text-3xl font-semibold">{totalUsers}</dd>
-            </div>
-            <div className="rounded-md bg-slate-50 p-4">
-              <dt className="text-sm text-slate-500">Online now</dt>
-              <dd className="mt-2 text-3xl font-semibold">{onlineUsers}</dd>
-            </div>
-          </dl>
         </div>
-      </section>
+      </nav>
+
+      <CommunityGlobe communities={communities} markers={markers} people={people} />
+      <footer className="border-t border-slate-200 bg-white">
+        <div className="mx-auto flex max-w-[1440px] flex-col gap-2 px-4 py-5 text-sm text-slate-600 sm:px-6 md:flex-row md:items-center md:justify-between">
+          <p>&copy; {currentYear} CMT Community Platform. All rights reserved.</p>
+          <p>This platform is for peer support and does not provide medical advice.</p>
+        </div>
+      </footer>
     </main>
   );
 }

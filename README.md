@@ -2,7 +2,7 @@
 
 A location-based community platform for people with Charcot-Marie-Tooth disease.
 
-This repository is currently at **Phase 4**: profiles, location settings, and communities.
+This repository is currently at **Phase 5**: interactive globe home page connected to backend data.
 
 ## Scope
 
@@ -92,6 +92,18 @@ GET    /api/communities/:id/members
 
 Public profile and member-list responses honor `locationVisibility`. Stored
 latitude and longitude are not exposed by these endpoints.
+
+## Phase 5 Globe Home Page
+
+The home page fetches:
+
+```text
+GET /api/locations/globe
+GET /api/communities
+```
+
+The globe uses aggregated city markers with city-center coordinates only. It
+does not expose exact addresses or precise GPS locations.
 
 ## Medical Disclaimer
 

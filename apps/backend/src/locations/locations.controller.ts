@@ -5,6 +5,11 @@ import { LocationsService } from './locations.service';
 export class LocationsController {
   constructor(private readonly locations: LocationsService) {}
 
+  @Get('globe')
+  listGlobeMarkers() {
+    return this.locations.listGlobeMarkers();
+  }
+
   @Get('countries')
   listCountries() {
     return this.locations.listCountries();
